@@ -1,7 +1,13 @@
 from rest_framework import serializers
-#from .models import ProductInventoryManagement , Product , Customer , Orders , Employee , Categories , SubCategory , Company , Brand
-from .models2 import Owner , Business , storeMaster , BusinessInventoryMaster , storeInventoryMaster , OwnerDetails , Product , SalesPending,GenBill,SalesRegister , Customer , EmployeeMaster , TransactionDetailsMaster , ReturnSalesPending , EmployeeCredential , EmployeeAuth , SupplierMaster , PurchaseRegister , PurchasePending , PurchaseTransactionDetails , ReturnTransactionDetails , Categories
+from rest_framework.serializers import ModelSerializer
+from django.contrib.auth.models import User
+from .models import *
+from .models2 import Owner , Sales, Business, storeMaster , BusinessInventoryMaster , storeInventoryMaster , OwnerDetails , Product , SalesPending,GenBill,SalesRegister , Customer , EmployeeMaster , TransactionDetailsMaster , ReturnSalesPending , EmployeeCredential , EmployeeAuth , SupplierMaster , PurchaseRegister , PurchasePending , PurchaseTransactionDetails , ReturnTransactionDetails , Categories
 
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sales
+        fields = '__all__'
 class OwnerSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -26,7 +32,24 @@ class StoreInventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = storeInventoryMaster
         fields = '__all__'
-class OwnerDetailsSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(trim_whitespace=False)
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            # You can add any additional validation here, if needed.
+            return data
+        else:
+            raise serializers.ValidationError("Username and password are required.")
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+class OwnerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = OwnerDetails
@@ -34,7 +57,6 @@ class OwnerDetailsSerializer(serializers.ModelSerializer):
 class ProductDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name' , 'MRP' , 'purchase_rate' , 'sale_rate' , 'gst']
 class ProductMasterserBusinessializer(serializers.ModelSerializer):
     
     class Meta:
@@ -60,7 +82,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
 class EmployeeSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = EmployeeMaster
         fields = '__all__'

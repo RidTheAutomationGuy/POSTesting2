@@ -1,7 +1,25 @@
 from django.db import models
 
+
+
+class Sales(models.Model):
+#     # business_id = models.ForeignKey(Business, on_delete=models.CASCADE)
+#     transaction_id = models.ForeignKey(TransactionDetail, on_delete=models.CASCADE)
+#     item_master_id = models.ForeignKey(ItemMaster, on_delete=models.CASCADE)
+#     item_variation_id = models.ForeignKey(ItemVariation, null=True, blank=True, on_delete=models.CASCADE)
+#      customer_id = models.ForeignKey(Customer, on_delete=models.DO_NOTHING , related_name='sales')
+ #   store_id = models.ForeignKey(storeMaster, on_delete=models.CASCADE)  # Connecting to storeMaster model
+#     store_stock_id = models.ForeignKey(StoreStock, on_delete=models.CASCADE)
+      
+    qty = models.PositiveIntegerField()
+    purchase_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    mrp = models.DecimalField(max_digits=10, decimal_places=2)
+    sale_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 class Owner(models.Model):
-    name = models.CharField(max_length=100 , blank=False)
+    username = models.CharField(max_length=100 , blank=False)
     email = models.EmailField(blank=False , unique=True)
     password = models.CharField(blank=False , max_length=100 , unique=True)
     contact_number = models.CharField(blank=False , max_length=10)
@@ -10,7 +28,7 @@ class Owner(models.Model):
     date_of_entry = models.DateField(blank=False)
 
     def __str__(self):
-        return f'{self.name} - {self.pk}'
+        return f'{self.username} - {self.pk}'
 class OwnerDetails(models.Model):
     owner_id = models.ForeignKey(Owner , on_delete=models.DO_NOTHING , related_name='details')
     address = models.CharField(max_length=300)
@@ -24,8 +42,8 @@ class OwnerDetails(models.Model):
         return f'Details of {self.owner_id}'
     
 class Business(models.Model):
-    
-    owner_id = models.ForeignKey(Owner , related_name='business' , blank=False , null=True , on_delete=models.DO_NOTHING)
+            
+    owner_id = models.ForeignKey(Owner , related_name='business' , blank=False , on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=50 , blank=False)
     email = models.EmailField(blank=True)
     phone = models.CharField(blank=True , max_length=12)
@@ -45,7 +63,7 @@ class storeMaster(models.Model):
     
     store_name = models.CharField(max_length=100 , blank=False)
     store_location = models.CharField(max_length=200 , blank=False)
-    associated_owner = models.ForeignKey(Owner , on_delete=models.DO_NOTHING , null=True , related_name = 'store')
+    associated_owner = models.ForeignKey(Owner , on_delete=models.DO_NOTHING, related_name = 'store')
     associated_business = models.ForeignKey(Business , related_name='store' , on_delete=models.DO_NOTHING)
     def __str__(self):
         return f' store ID - {self.pk} ->> {self.store_name} + {self.associated_business}'
@@ -84,16 +102,16 @@ class Roles(models.Model):
 
 class EmployeeMaster(models.Model):
     
-    name = models.CharField(max_length=100 , blank=False)
-    phone = models.CharField(max_length=10 , blank=False , unique=True)
-    email = models.EmailField(blank=True)
-    address = models.CharField(max_length=200 , blank=False)
-    adhaar = models.CharField(max_length=12 , blank=False , unique=True)
-    business = models.ForeignKey(Business , on_delete=models.DO_NOTHING , related_name='employee' , null = True)
-    role = models.ForeignKey(Roles , related_name='employee' , on_delete=models.DO_NOTHING , null=True)
+    name = models.CharField(max_length=100 , )
+    email = models.EmailField()
+    phone = models.CharField(max_length=10 ,unique=True)
+    address = models.CharField(max_length=200 , )
+    adhaar = models.CharField(max_length=12 , unique=True)
+    #business = models.ForeignKey(Business , on_delete=models.DO_NOTHING , related_name='employee')
+   
     
     def __str__(self):
-        return f' {self.name} -> ID {self.pk} '
+        return self.name
 
 
 class EmployeeCredential(models.Model):
@@ -119,12 +137,10 @@ class EmployeeAuth(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=100 , blank=False)
     contact = models.CharField(max_length=10 , unique=True , blank=False) 
-    address = models.CharField(max_length=200 , blank=False , null=True)
+    address = models.CharField(max_length=200 , blank=False )
     store = models.ForeignKey(storeMaster , on_delete=models.DO_NOTHING , related_name='customer')
     
-    def __str__(self):
-        return f'cus name {self.name} cus ID {self.pk}' 
-
+    
 class TaxMaster(models.Model):
     name = models.CharField(max_length=20)
     

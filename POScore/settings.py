@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-wb8n9ir#j2xktk57r8%s!xpnrgkhiujbqj-g^e=tyvn-0x=qst
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.18' , 'localhost' , '192.168.1.17' , '192.168.1.19']
+ALLOWED_HOSTS = ['192.168.1.18' , '127.0.0.1' , '192.168.1.17' , '192.168.1.19']
 
 
 # Application definition
@@ -32,10 +32,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'POSDemo',
-    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    "debug_toolbar"
+    'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 
@@ -47,9 +47,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'POScore.urls'
@@ -70,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'POScore.wsgi.application'
+
 
 
 # Database
@@ -79,10 +80,10 @@ WSGI_APPLICATION = 'POScore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'GPOS', 
-        'USER': 'postgres', 
-        'PASSWORD': 'riddhi',
-        'HOST': '127.0.0.1', 
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'tapu7077',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -117,7 +118,7 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = False
-
+DEBUG = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -129,10 +130,26 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
-
+ORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    
-    # Add more origins as necessary
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',  # Replace with your frontend URL
+    # Other allowed origins
+]
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'cs-mum-9.webhostbox.net'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True  # Set to False if you use SSL
+EMAIL_HOST_USER = 'priyabrata@thegraphe.com'
+EMAIL_HOST_PASSWORD = 'Graphe@1105'
+DEFAULT_FROM_EMAIL = 'priyabrata@thegraphe.com'
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
